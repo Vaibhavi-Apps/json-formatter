@@ -1,0 +1,234 @@
+@import "tailwindcss";
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
+
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+}
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+@layer base {
+  *, ::before, ::after {
+    border-color: var(--color-border);
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Custom UI for CodeMirror Search Panel */
+.cm-editor .cm-panel.cm-search {
+  background-color: var(--color-card) !important;
+  color: var(--color-card-foreground) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  padding: 12px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px 12px !important;
+  font-family: inherit !important;
+}
+
+.cm-editor .cm-panel.cm-search input.cm-textfield {
+  background-color: var(--color-background) !important;
+  border: 1px solid var(--color-input) !important;
+  color: var(--color-foreground) !important;
+  padding: 6px 12px !important;
+  border-radius: var(--radius-md) !important;
+  outline: none !important;
+  font-size: 13px !important;
+  min-width: 180px !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}
+
+.cm-editor .cm-panel.cm-search input.cm-textfield:focus {
+  border-color: var(--color-ring) !important;
+  box-shadow: 0 0 0 1px var(--color-ring) !important;
+}
+
+.cm-editor .cm-panel.cm-search button.cm-button {
+  background-color: var(--color-secondary) !important;
+  color: var(--color-secondary-foreground) !important;
+  background-image: none !important;
+  border: 1px solid transparent !important;
+  padding: 6px 12px !important;
+  border-radius: var(--radius-md) !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s !important;
+  text-transform: capitalize !important;
+}
+
+.cm-editor .cm-panel.cm-search button.cm-button:hover {
+  background-color: var(--color-muted) !important;
+  border-color: var(--color-border) !important;
+}
+
+.cm-editor .cm-panel.cm-search button[name="close"] {
+  margin-left: auto !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 4px 8px !important;
+  font-size: 18px !important;
+  color: var(--color-muted-foreground) !important;
+  line-height: 1 !important;
+}
+
+.cm-editor .cm-panel.cm-search button[name="close"]:hover {
+  color: var(--color-foreground) !important;
+  background: var(--color-muted) !important;
+}
+
+.cm-editor .cm-panel.cm-search label {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 13px !important;
+  color: var(--color-muted-foreground) !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+}
+
+.cm-editor .cm-panel.cm-search label input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 16px !important;
+  height: 16px !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 4px !important;
+  background-color: var(--color-background) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  transition: all 0.2s ease !important;
+  margin: 0 !important;
+  display: grid !important;
+  place-content: center !important;
+}
+
+.cm-editor .cm-panel.cm-search label input[type="checkbox"]:hover {
+  border-color: var(--color-primary) !important;
+}
+
+.cm-editor .cm-panel.cm-search label input[type="checkbox"]:checked {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+
+.cm-editor .cm-panel.cm-search label input[type="checkbox"]::before {
+  content: "" !important;
+  width: 10px !important;
+  height: 10px !important;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%) !important;
+  transform: scale(0) !important;
+  background-color: var(--color-primary-foreground) !important;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.cm-editor .cm-panel.cm-search label input[type="checkbox"]:checked::before {
+  transform: scale(1) !important;
+}
+
+.cm-editor .cm-panel.cm-search label input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--color-ring) !important;
+  outline-offset: 2px !important;
+}
+
+.cm-editor .cm-searchMatch {
+  background-color: rgba(234, 179, 8, 0.4) !important;
+}
+
+.cm-editor .cm-searchMatch-selected {
+  background-color: rgba(234, 179, 8, 0.8) !important;
+  outline: 1px solid rgba(234, 179, 8, 1) !important;
+}
