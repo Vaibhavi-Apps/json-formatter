@@ -6,7 +6,7 @@ export function Hero() {
           Free Online <span className="text-primary">JSON Formatter</span>
         </h1>
         <p className="text-base md:text-lg text-muted-foreground max-w-2xl">
-        A fast, secure, and free online tool to format, validate, beautify, and minify JSON.
+        A fastest, secure, and free online tool to format, validate, beautify, and minify JSON.
         </p>
       </div>
     </section>
