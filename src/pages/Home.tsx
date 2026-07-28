@@ -7,6 +7,8 @@ import { Toolbar } from '../components/Toolbar';
 import { Editor } from '../components/Editor';
 import { StatusPanel } from '../components/StatusPanel';
 import type { StatusType } from '../components/StatusPanel';
+import { DiffViewer } from '../components/DiffViewer';
+import { JsonTreeView } from '../components/JsonTreeView';
 // import { Advertisement } from '../components/Advertisement';
 // import { Footer } from '../components/Footer';
 
@@ -114,6 +116,49 @@ export function Home() {
     }
   }, [jsonInput]);
 
+  const handleEscape = useCallback(() => {
+    try {
+      if (!jsonInput.trim()) return;
+
+      // Check if it's already an escaped string to prevent infinite double-escaping
+      try {
+        const parsed = JSON.parse(jsonInput);
+        if (typeof parsed === 'string') {
+          setStatus({ type: 'error', message: 'JSON is already escaped! Use Unescape first if you want to modify it.' });
+          return;
+        }
+      } catch (e) {
+        // If it doesn't parse, it's definitely not an escaped string, so we proceed to escape it.
+      }
+
+      // JSON.stringify on the raw input string will escape all quotes and preserve newlines if present.
+      // If the user wants a single line, they can simply hit "Minify" before hitting "Escape".
+      const stringified = JSON.stringify(jsonInput);
+      setJsonInput(stringified);
+      setStatus({ type: 'success', message: 'JSON escaped successfully. (Tip: Minify first for a single-line string)' });
+    } catch (e: any) {
+      setStatus({ type: 'error', message: `Cannot escape: ${e.message}` });
+    }
+  }, [jsonInput]);
+
+  const handleUnescape = useCallback(() => {
+    try {
+      if (!jsonInput.trim()) return;
+      // We parse the string to remove the outer quotes and unescape the inner quotes.
+      const unescaped = JSON.parse(jsonInput);
+      if (typeof unescaped !== 'string') {
+         throw new Error('Input is not a valid escaped JSON string.');
+      }
+      setJsonInput(unescaped);
+      setStatus({ type: 'success', message: 'JSON unescaped successfully. You can now beautify it.' });
+    } catch (e: any) {
+      setStatus({ type: 'error', message: `Cannot unescape: Make sure the string starts and ends with quotes.` });
+    }
+  }, [jsonInput]);
+
+  const [mode, setMode] = useState<'format' | 'diff'>('format');
+  const [viewType, setViewType] = useState<'code' | 'tree'>('code');
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
       <Header />
@@ -122,23 +167,70 @@ export function Home() {
         <Hero />
         
         <section className="container mx-auto px-4 pb-12 flex-1 flex flex-col">
-          <div className="flex-1 flex flex-col bg-card rounded-lg shadow-sm border border-border overflow-hidden">
-            <Toolbar 
-              onBeautify={handleBeautify}
-              onMinify={handleMinify}
-              onValidate={handleValidate}
-              onFind={handleFind}
-              onCopy={handleCopy}
-              onDownload={handleDownload}
-            />
-            <StatusPanel status={status.type} message={status.message} />
-            <div className="flex-1 flex flex-col min-h-[500px]" onPaste={handlePaste}>
-              <Editor 
-                editorRef={editorRef}
-                value={jsonInput}
-                onChange={handleEditorChange}
-              />
+          <div className="flex justify-center mb-6">
+            <div className="bg-muted p-1 rounded-lg inline-flex">
+              <button 
+                onClick={() => setMode('format')}
+                className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${mode === 'format' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                Formatter
+              </button>
+              <button 
+                onClick={() => setMode('diff')}
+                className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${mode === 'diff' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                Diff / Compare
+              </button>
             </div>
+          </div>
+
+          <div className="flex-1 flex flex-col bg-card rounded-lg shadow-sm border border-border overflow-hidden">
+            {mode === 'format' ? (
+              <>
+                <Toolbar 
+                  onBeautify={handleBeautify}
+                  onMinify={handleMinify}
+                  onValidate={handleValidate}
+                  onFind={handleFind}
+                  onEscape={handleEscape}
+                  onUnescape={handleUnescape}
+                  onCopy={handleCopy}
+                  onDownload={handleDownload}
+                />
+                
+                <div className="flex items-center justify-between border-b border-border bg-muted/30 px-4 py-2">
+                  <StatusPanel status={status.type} message={status.message} />
+                  <div className="flex bg-muted p-0.5 rounded-md">
+                    <button 
+                      onClick={() => setViewType('code')}
+                      className={`px-3 py-1 rounded text-xs font-medium transition-colors ${viewType === 'code' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                      Code View
+                    </button>
+                    <button 
+                      onClick={() => setViewType('tree')}
+                      className={`px-3 py-1 rounded text-xs font-medium transition-colors ${viewType === 'tree' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                      Tree View
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex-1 flex flex-col min-h-[500px]" onPaste={handlePaste}>
+                  {viewType === 'code' ? (
+                    <Editor 
+                      editorRef={editorRef}
+                      value={jsonInput}
+                      onChange={handleEditorChange}
+                    />
+                  ) : (
+                    <JsonTreeView value={jsonInput} />
+                  )}
+                </div>
+              </>
+            ) : (
+              <DiffViewer />
+            )}
           </div>
           
           {/* <Advertisement /> */}
